@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @WebMvcTest
@@ -28,8 +29,21 @@ class PostControllerTest {
 //                        .param("title", "글 제목입니다")
 //                        .param("content","글 내용입니다")
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().string("Hello World"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{}"))
+                .andDo(print());
+    }
+
+    //값 비워서 에러메시지 출력
+    @Test
+    @DisplayName("/posts 요청시 title 값은 필수다.")
+    void test2() throws Exception {
+        mockMvc.perform(post("/posts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"title\": null, \"content\": \"내용입니다\"}") //title이 null일때 에러메시지 출력
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("타이틀을 입력해주세요"))
                 .andDo(print());
     }
 }
