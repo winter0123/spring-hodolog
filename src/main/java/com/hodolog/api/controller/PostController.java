@@ -36,20 +36,25 @@ public class PostController {
     //4. db에 값을 저장할 때 의도치 않은 오류가 발생할 수 있다.
     //5. 서버 개발자의 편안함을 위해서
 
+//    @PostMapping("/posts")
+//    public Map<String,String> post(@RequestBody @Valid PostCreate params, BindingResult result) throws Exception {
+//        log.info("params={}",params.toString());
+//        if(result.hasErrors()) {
+//            List<FieldError> fieldErrors = result.getFieldErrors();
+//            FieldError firstFieldError = fieldErrors.get(0);
+//            String fieldName = firstFieldError.getField(); //title
+//            String errorMessage = firstFieldError.getDefaultMessage(); //..에러메시지
+//
+//            Map<String,String> error = new HashMap<>();
+//            error.put(fieldName, errorMessage);
+//            return error;
+//        }
+//
+//        return Map.of();
+//    }
+
     @PostMapping("/posts")
-    public Map<String,String> post(@RequestBody @Valid PostCreate params, BindingResult result) throws Exception {
-        log.info("params={}",params.toString());
-        if(result.hasErrors()) {
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            FieldError firstFieldError = fieldErrors.get(0);
-            String fieldName = firstFieldError.getField(); //title
-            String errorMessage = firstFieldError.getDefaultMessage(); //..에러메시지
-
-            Map<String,String> error = new HashMap<>();
-            error.put(fieldName, errorMessage);
-            return error;
-        }
-
+    public Map<String,String> post(@RequestBody @Valid PostCreate params) throws Exception {
         return Map.of();
     }
 }
