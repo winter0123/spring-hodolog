@@ -1,7 +1,9 @@
 package com.hodolog.api.controller;
 
 import com.hodolog.api.request.PostCreate;
+import com.hodolog.api.service.PostService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -14,6 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PostController {
 
 //    @PostMapping("/posts")
@@ -53,8 +56,11 @@ public class PostController {
 //        return Map.of();
 //    }
 
+    private final PostService postService;
+
     @PostMapping("/posts")
-    public Map<String,String> post(@RequestBody @Valid PostCreate params) throws Exception {
+    public Map<String,String> post(@RequestBody @Valid PostCreate request) {
+        postService.write(request);
         return Map.of();
     }
 }
