@@ -3,6 +3,7 @@ package com.hodolog.api.service;
 import com.hodolog.api.domain.Post;
 import com.hodolog.api.repository.PostRepository;
 import com.hodolog.api.request.PostCreate;
+import com.hodolog.api.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,8 +56,12 @@ class PostServiceTest {
                 .build();
         postRepository.save(requestPost);
 
+        //클라이언트 요구사항
+        //json 응답에서 title값 길이를 10글자로 제한해 주세요.
+
+
         //when
-        Post post = postService.get(requestPost.getId());
+        PostResponse post = postService.get(requestPost.getId());
 
         //then
         assertNotNull(post);
