@@ -77,4 +77,10 @@ public class PostController {
         //Long postId = postService.write(request);
         //return Map.of("postId",postId);
     }
+
+    @GetMapping("/posts/{postId}")
+    public Post get(@PathVariable(name= "postId") Long id){
+       Post post = postService.get(id);
+       return post;
+    }
 }

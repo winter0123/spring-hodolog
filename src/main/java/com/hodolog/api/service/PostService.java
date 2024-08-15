@@ -5,7 +5,6 @@ import com.hodolog.api.repository.PostRepository;
 import com.hodolog.api.request.PostCreate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -24,5 +23,11 @@ public class PostService {
         //return postRepository.save(post);
         //return postRepository.save(post).getId();
         postRepository.save(post);
+    }
+
+    public Post get(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
+        return post;
     }
 }
