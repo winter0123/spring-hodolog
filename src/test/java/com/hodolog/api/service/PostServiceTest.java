@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class PostServiceTest {
@@ -55,10 +58,7 @@ class PostServiceTest {
                 .content("bar")
                 .build();
         postRepository.save(requestPost);
-
-        //클라이언트 요구사항
-        //json 응답에서 title값 길이를 10글자로 제한해 주세요.
-
+        //클라이언트 요구사항: json 응답에서 title값 길이를 10글자로 제한해 주세요.
 
         //when
         PostResponse post = postService.get(requestPost.getId());
@@ -68,6 +68,28 @@ class PostServiceTest {
         assertEquals(1L, postRepository.count());
         assertEquals("foo", post.getTitle());
         assertEquals("bar", post.getContent());
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test3() {
+        //given
+        postRepository.saveAll(List.of(
+                Post.builder()
+                        .title("foo1")
+                        .content("bar1")
+                        .build(),
+                Post.builder()
+                        .title("foo2")
+                        .content("bar2")
+                        .build()
+        ));
+
+        //when
+        List<PostResponse> posts = postService.getList();
+
+        //then
+        assertEquals(2L, posts.size());
     }
 
 }
