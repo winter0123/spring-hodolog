@@ -1,9 +1,14 @@
 package com.hodolog.api.service;
 
 import com.hodolog.api.domain.Post;
+import com.hodolog.api.domain.PostEditor;
+import com.hodolog.api.exception.PostNotFound;
 import com.hodolog.api.repository.PostRepository;
 import com.hodolog.api.request.PostCreate;
+import com.hodolog.api.request.PostEdit;
+import com.hodolog.api.request.PostSearch;
 import com.hodolog.api.response.PostResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -57,11 +62,32 @@ public class PostService {
 //                .collect(Collectors.toList());
 //    }
 
-    public List<PostResponse> getList(Pageable pageable) {
+    public List<PostResponse> getList(PostSearch postSearch) {
         //Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"id"));
-        return postRepository.findAll(pageable).stream()
+        return postRepository.getList(postSearch).stream()
                 //.map(post -> new PostResponse(post)) //생성자 오버로딩
                 .map(PostResponse::new) //생성자 오버로딩을 java8 메소드 레퍼런스 형태로 변경(위,아래 같은 코드)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(PostNotFound::new);
+
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+        PostEditor postEditor = editorBuilder.title(postEdit.getTitle())
+                .content(postEdit.getContent())
+                .build();
+
+        post.edit(postEditor);
+    }
+
+    public void delete(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(PostNotFound::new);
+
+        postRepository.delete(post);
     }
 }
