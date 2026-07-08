@@ -1,6 +1,7 @@
 package com.hodolog.api.service;
 
 import com.hodolog.api.domain.Post;
+import com.hodolog.api.exception.PostNotFound;
 import com.hodolog.api.repository.PostRepository;
 import com.hodolog.api.request.PostCreate;
 import com.hodolog.api.request.PostEdit;
@@ -145,8 +146,25 @@ class PostServiceTest {
 
     //실패 케이스 테스트
     @Test
-    @DisplayName("글 1개 조회")
+    @DisplayName("게시글 조회 - 존재하지 않는 글")
     void test7() {
+        //given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        //expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.delete(post.getId() + 1L);
+        });
+    }
+
+    //실패 케이스 테스트
+    @Test
+    @DisplayName("게시글 삭제 - 존재하지 않는 글")
+    void test8() {
         //given
         Post post = Post.builder()
                 .title("호돌맨")
@@ -158,11 +176,31 @@ class PostServiceTest {
         //post.getId() //primary_id = 1
 
         //expected
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(PostNotFound.class, () -> {
             postService.get(post.getId() + 1L);
         });
+    }
 
-        assertEquals("존재하지 않는 글입니다.", e.getMessage());
+    //실패 케이스 테스트
+    @Test
+    @DisplayName("게시글 수정 - 존재하지 않는 글")
+    void test9() {
+        //given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title(null)
+                .content("초가집")
+                .build();
+
+        //expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.edit(post.getId() + 1L, postEdit);
+        });
     }
 
     @Test
