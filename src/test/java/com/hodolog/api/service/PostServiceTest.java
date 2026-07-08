@@ -6,6 +6,7 @@ import com.hodolog.api.request.PostCreate;
 import com.hodolog.api.request.PostEdit;
 import com.hodolog.api.request.PostSearch;
 import com.hodolog.api.response.PostResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class PostServiceTest {
@@ -140,6 +141,28 @@ class PostServiceTest {
 
         //then
         assertEquals(0, postRepository.count());
+    }
+
+    //실패 케이스 테스트
+    @Test
+    @DisplayName("글 1개 조회")
+    void test7() {
+        //given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+        //클라이언트 요구사항: json 응답에서 title값 길이를 10글자로 제한해 주세요.
+
+        //post.getId() //primary_id = 1
+
+        //expected
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
+            postService.get(post.getId() + 1L);
+        });
+
+        assertEquals("존재하지 않는 글입니다.", e.getMessage());
     }
 
     @Test

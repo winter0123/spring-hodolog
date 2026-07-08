@@ -37,7 +37,7 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -86,8 +86,8 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                //.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-                .orElseThrow(PostNotFound::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                //.orElseThrow(PostNotFound::new);
 
         postRepository.delete(post);
     }
