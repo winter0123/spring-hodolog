@@ -1,5 +1,6 @@
 package com.hodolog.api.request;
 
+import com.hodolog.api.exception.InvalidRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,5 +30,11 @@ public class PostCreate {
     // 값 생성에 대힌 유연함
     //필요한 값만 받을 수 있다 - 오버로딩 가능한 조건?
     // 객체의 불변성
+
+    public void validate() {
+        if (title.contains("바보")){
+            throw new InvalidRequest("title", "제목에 바보를 포함할 수 없습니다.");
+        }
+    }
 
 }
