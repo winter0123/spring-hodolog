@@ -21,6 +21,7 @@ import java.util.Map;
 //@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 //@RequiredArgsConstructor
 public class ErrorResponse {
+
     private final String code;
     private final String message;
     private final Map<String, String> validation;
@@ -29,10 +30,10 @@ public class ErrorResponse {
     public ErrorResponse(String code, String message, Map<String, String> validation) {
         this.code = code;
         this.message = message;
-        this.validation = validation;
+        this.validation = validation != null ? validation : new HashMap<>();
     }
 
     public void addValidation(String fieldName, String errorMessage) {
-        this.validation.put(fieldName,errorMessage);
+        this.validation.put(fieldName, errorMessage);
     }
 }

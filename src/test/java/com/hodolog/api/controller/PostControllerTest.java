@@ -85,8 +85,8 @@ class PostControllerTest {
 
         //expected
         mockMvc.perform(post("/posts")
-                                .contentType(APPLICATION_JSON)
-                                .content(json) //title이 null일때 에러메시지 출력
+                        .contentType(APPLICATION_JSON)
+                        .content(json)//title이 null일때 에러메시지 출력
                         //.content("{\"title\": null, \"content\": \"내용입니다\"}") //title이 null일때 에러메시지 출력
                 )
                 .andExpect(status().isBadRequest())
@@ -195,9 +195,32 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("페이지를 0으로 요청하면 첫 페이지를 가져온다.")
+    void test6() throws Exception {
+        // given
+        List<Post> requestPosts = IntStream.range(0, 20)
+                .mapToObj(i -> Post.builder()
+                        .title("foo" + i)
+                        .content("bar" + i)
+                        .build())
+                .collect(Collectors.toList());
+
+        postRepository.saveAll(requestPosts);
+
+        // expected
+        mockMvc.perform(get("/posts?page=0&size=10")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$[0].title").value("foo19"))
+                .andExpect(jsonPath("$[0].content").value("bar19"))
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("글 제목 수정")
     void test7() throws Exception {
-        //given
+        // given
         Post post = Post.builder()
                 .title("호돌맨")
                 .content("반포자이")
@@ -209,7 +232,7 @@ class PostControllerTest {
                 .content("반포자이")
                 .build();
 
-        //expected
+        // expected
         mockMvc.perform(patch("/posts/{postId}", post.getId())
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postEdit)))
@@ -247,13 +270,13 @@ class PostControllerTest {
     @Test
     @DisplayName("존재하지 않는 게시글 수정")
     void test10() throws Exception {
-        //given
+        // given
         PostEdit postEdit = PostEdit.builder()
                 .title("호돌걸")
                 .content("반포자이")
                 .build();
 
-        //expected
+        // expected
         mockMvc.perform(patch("/posts/{postId}", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postEdit)))
