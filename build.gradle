@@ -66,6 +66,10 @@ asciidoctor {
 	dependsOn test
 }
 
+asciidoctor.doFirst {
+	delete file("src/main/resources/static/docs")
+}
+
 bootJar {
 	dependsOn asciidoctor
 	//	from ("${asciidoctor.outputDir}") {
@@ -73,8 +77,8 @@ bootJar {
 	//		into 'static/docs'
 	//	}
 	copy {
-		from asciidoctor.outputDir
-		into "src/main/resources/static/docs"
+		from asciidoctor.outputDir // asciidoctor 실행 후 복사
+		into "src/main/resources/static/docs" // A 위치의 파일을 여기에 복사
 	}
 
 
